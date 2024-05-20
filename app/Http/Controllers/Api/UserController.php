@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 use UserRepository;
 
 class UserController extends Controller
@@ -60,12 +61,14 @@ class UserController extends Controller
             ]);
         }
 
+        $cookie = Cookie("authToken", $token, 60 * 24 * 7);
+
         return response()->json([
             "status" => true,
             "message" => "user login successfully",
             "token" => $token,
             "expires_in" => auth()->factory()->getTTL() * 60,
-        ]);
+        ])->withCookie($cookie);
     }
 
     public function refresh()
@@ -91,10 +94,11 @@ class UserController extends Controller
 
     public function logout()
     {
+        // Cookie::queue(Cookie::forget("authToken"));
         auth()->logout();
         return response()->json([
             "status" => true,
             "message" => "user logout successfully",
-        ]);
+        ])->withoutCookie("authToken");
     }
 }
