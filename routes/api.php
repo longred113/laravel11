@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\ResetPasswordController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -27,3 +28,5 @@ Route::prefix('category')
             Route::post('/find', [CategoryController::class, "show"]);
         });
     });
+Route::post('forgot-password', [ResetPasswordController::class, "sendMail"]);
+Route::post('reset-password', [ResetPasswordController::class, "reset"]);

@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Models\PasswordReset;
+use App\Models\PasswordResetToken;
 use App\Models\User;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 
@@ -24,10 +24,15 @@ class UserRepository implements UserRepositoryInterface
 
     public function passwordReset($email, $token)
     {
-        return PasswordReset::updateOrCreate([
+        return PasswordResetToken::updateOrCreate([
             "email" => $email,
         ], [
             "token" => $token,
         ]);
+    }
+    public function updatePassword($email, $password)
+    {
+        $user = $this->findEmail($email);
+        return $user->update([ "password" => bcrypt($password)]);
     }
 }
