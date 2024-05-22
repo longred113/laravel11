@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ResetPasswordController;
+use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -30,3 +31,12 @@ Route::prefix('category')
     });
 Route::post('forgot-password', [ResetPasswordController::class, "sendMail"]);
 Route::post('reset-password', [ResetPasswordController::class, "reset"]);
+Route::prefix('role')
+    ->name('role.')
+    ->group(function () {
+        Route::get('/', [RoleController::class, "index"]);
+        Route::post('/create', [RoleController::class, "store"]);
+        Route::group(["middleware" => "auth:api"], function () {
+            Route::post('/find', [RoleController::class, "show"]);
+        });
+    });

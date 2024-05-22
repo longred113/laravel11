@@ -86,7 +86,7 @@ class UserController extends Controller
 
     public function profile()
     {
-        $userData = auth()->user();
+        $userData = auth()->user()->load('roles');
         return response()->json([
             "status" => true,
             "message" => "user profile",
