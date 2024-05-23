@@ -14,6 +14,7 @@ class UserRepository implements UserRepositoryInterface
             "name" => $name,
             "email" => $email,
             "password" => bcrypt($password),
+            "role" => 2,
         ]);
     }
 
@@ -33,6 +34,6 @@ class UserRepository implements UserRepositoryInterface
     public function updatePassword($email, $password)
     {
         $user = $this->findEmail($email);
-        return $user->update([ "password" => bcrypt($password)]);
+        return $user->update(["password" => bcrypt($password)]);
     }
 }

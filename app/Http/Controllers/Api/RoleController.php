@@ -43,17 +43,37 @@ class RoleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show()
     {
-        //
+        $data = $this->roleRepository->getRoleById($this->request->id);
+        $a = $data->load('permissions');
+        return response()->json([
+            "data" => $a
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update()
     {
-        //
+        $this->request->validate([
+            'roleId' => "required",
+            'name' => 'required',
+        ]);
+
+        $data = $this->roleRepository->updateRole($this->request->name, $this->request->roleId);
+        if ($data === true) {
+            return response()->json([
+                "status" => true,
+                "message" => "role updated successfully",
+            ]);
+        } else {
+            return response()->json([
+                "status" => false,
+                "message" => "role not found",
+            ]);
+        }
     }
 
     /**
@@ -61,6 +81,28 @@ class RoleController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $data = $this->roleRepository->delete($id);
+        if ($data === 1) {
+            return response()->json([
+                "status" => true,
+                "message" => "role deleted successfully",
+            ]);
+        } else {
+            return response()->json([
+                "status" => false,
+                "message" => "role not found",
+            ]);
+        }
+    }
+
+    public function addPermission()
+    {
+        $this->request->validate([
+            'roleId' => "required",
+            'permissionId' => "required",
+            'name' => "required",
+        ]);
+
+        $data = $this->roleRepository->addPermission($this->request->roleId, $this->request->permissionId, $this->request->name);
     }
 }

@@ -30,11 +30,11 @@ class UserController extends Controller
             "email" => "required|string|email|unique:users",
             "password" => "required|confirmed",
         ]);
-
+        $role = 2;
         $user = $this->userRepository->register(
             $this->request->name,
             $this->request->email,
-            $this->request->password
+            $this->request->password,
         );
 
         return response()->json([
@@ -86,7 +86,7 @@ class UserController extends Controller
 
     public function profile()
     {
-        $userData = auth()->user()->load('roles');
+        $userData = auth()->user()->load('roles', 'permissions');
         return response()->json([
             "status" => true,
             "message" => "user profile",
@@ -102,5 +102,14 @@ class UserController extends Controller
             "status" => true,
             "message" => "user logout successfully",
         ])->withoutCookie("authToken");
+    }
+
+    public function addUserPermission()
+    {
+        $this->request->validate([
+            "user_id" => "required|integer",
+            "permission_id" => "required|integer",
+        ]);
+        $user = auth()->user();
     }
 }
